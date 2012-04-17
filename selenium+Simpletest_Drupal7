@@ -1,0 +1,11 @@
+SimpleTest & Selenium for Drupal 7 
+ 
+For those who encounter a problem when integraiting Selenium WebDriver into SimpleTest (Drupal 7) we provide our solution. It based on original SimpleTest module (Drupal7) and a work of Yuri Gerasimov (http://drupal.org/sandbox/ygerasimov/1131210).
+
+In the begining we occured with a problem. Browser worked with original table but SimpleTest called prefixed database table. So SimpleTest make changes in one place and Browser looks for them in another one. This occurs when browser can not get profile in time.
+То solve this problem we patched bootstrap.inc file in /include to change allowed time window for HMAC key generation:
+-    if ($time_diff >= 0 && $time_diff <= 5 && $hmac == drupal_hmac_base64($check_string, $key)) {
++    if ($time_diff >= 0 && $time_diff <= 600 && $hmac == drupal_hmac_base64($check_string, $key)) { 
+
+Also we patched method DrupalSeleniumWebTestCase::drupelPost() in drupal_web_test_case.php adding some return values such as nid, timestamp, title and body to make them check more easely.
+
